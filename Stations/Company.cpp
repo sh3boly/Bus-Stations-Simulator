@@ -32,13 +32,13 @@ bool Company::readInput()
 			busStations[i] = S;
 		}
 		for (int i = 0; i < WBus_count; i++) {
-			Buss* b = new Buss;
+			Buss* b = new Buss(i, WBus_capactiy);
 			b->setType("Wbus");
 			b->setBusDirection("FWD");
 			busStations[0]->addWaitingBus(b);
 		}
-		for (int i = 0; i < MBus_count; i++) {
-			Buss* b = new Buss;
+		for (int i = WBus_count; i < MBus_count + WBus_count; i++) {
+			Buss* b = new Buss(i, MBus_capacity);
 			b->setType("Mbus");
 			b->setBusDirection("FWD");
 			busStations[0]->addWaitingBus(b);
@@ -228,13 +228,31 @@ void Company::Simulate()
 				}
 				
 			}*/
-			
-			if (choice == 1) {
-				pUI->printInteractive();
-			}
-			minutes = minutes + 10;
+		releaseBus();
+		boardPassnegers();
+		if (choice == 1) {
+			pUI->printInteractive();
+		}
+		minutes = minutes + 5;
 
 		}
+}
+
+void Company::releaseBus()
+{
+	Buss* b;
+	if (minutes % 15 == 0) {
+		b = busStations[0]->removeFWDBus();
+		busStations[1]->addFWDBuss(b);
+	}
+}
+
+void Company::boardPassnegers()
+{
+	for (int i = 0; i < s; i++) {
+		busStations[i + 1]->boardPassenger();
+		busStations[i + 1]->boardWPPassenger();
+	}
 }
 
 string Company::changeTime(int mins)

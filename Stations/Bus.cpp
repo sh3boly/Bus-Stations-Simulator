@@ -147,18 +147,18 @@
 //}
 #include "Bus.h"
 
-Buss::Buss()
+Buss::Buss(int id, int cap)
 {
+    busID = id;
     bussType = "Mbus";
-    capacity = 0;
+    capacity = cap;
     maintenanceTime = 0;
     currentJourney = 0;
     journeysCompleted = 0;
     currentStation = 0;
     isMaintenance = false;
     busDirecton = "FWD";
-    // Initialize busPassengers if needed
-    // busPassengers = new LinkedQueue<Passenger*>();
+    busPassengers = new LinkedQueue<Passenger*>;
 }
 
 void Buss::setType(string T)
@@ -176,6 +176,11 @@ void Buss::setCapacity(int bc)
     capacity = bc;
 }
 
+int Buss::getCountPassenger()
+{
+    return countPassengers;
+}
+
 int Buss::getCapacity() const
 {
     return capacity;
@@ -184,6 +189,21 @@ int Buss::getCapacity() const
 int Buss::getRemCapacity()
 {
     return capacity;
+}
+
+int Buss::getPassengerID(int no)
+{
+    Passenger* p{};
+    LinkedQueue<Passenger*>* tempBusPassengers(busPassengers);
+    for (int i = 0; i < no; i++) {
+        tempBusPassengers->dequeue(p);
+    }
+    return p->getID();
+}
+
+int Buss::getID()
+{
+    return busID;
 }
 
 void Buss::setMaintenanceTime(int t)
@@ -276,13 +296,11 @@ void Buss::changeBusDirection()
 
 void Buss::getOn(Passenger* p)
 {
-    // Initialize busPassengers if needed
-    // if (!busPassengers)
-    //     busPassengers = new LinkedQueue<Passenger*>();
+    
     busPassengers->enqueue(p);
+    countPassengers++;
 }
 
 void Buss::getOff(Passenger* p)
 {
-    // Implement the function as needed
 }

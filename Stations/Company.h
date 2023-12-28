@@ -48,6 +48,8 @@ public:
 	bool movePassenger(int typ, int stationNumber);
 	Stations getStation(int number);
 	void Simulate();
+	void releaseBus();
+	void boardPassnegers();
 	string changeTime(int mins); // changes time from minutes to HH::MM
 };
 

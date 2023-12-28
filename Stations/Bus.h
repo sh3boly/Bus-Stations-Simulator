@@ -62,22 +62,27 @@ class Buss
 private:
     string bussType;
     int capacity;
+    int busID;
     int maintenanceTime;
     int currentJourney;
     int journeysCompleted;
     int currentStation;
     bool isMaintenance;
+    int countPassengers;
     string busDirecton;
     LinkedQueue<Passenger*>* busPassengers;
 
 public:
-    Buss();
+    Buss(int id, int cap);
     void setType(string T);
     string getType() const;
 
     void setCapacity(int bc);
+    int getCountPassenger();
     int getCapacity() const;
     int getRemCapacity();
+    int getPassengerID(int no);
+    int getID();
 
     void setMaintenanceTime(int t);
     int getMaintenanceTime() const;

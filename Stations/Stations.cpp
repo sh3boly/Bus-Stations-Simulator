@@ -33,10 +33,12 @@ Stations::Stations(int t, int no)
 
 void Stations::addWaitingBus(Buss* Bus)
 {
-	if (Bus->getBusDirection() == "FWD")
+	if (Bus->getBusDirection() == "FWD") {
 		FWDBusses->enqueue(Bus);
-	else
-		BCKBusses->enqueue(Bus);
+		countBuses++;
+	}
+	//else
+		//BCKBusses->enqueue(Bus);
 }
 /*Adds a waiting passenger by:
 1-Checking the direction 
@@ -141,35 +143,67 @@ void Stations::removeWaitingPassenger(int id, int number)
 	}
 }
 
-void Stations::boardPassenger(Passenger *p)
+void Stations::boardWPPassenger()
 {
-	// for NP
-	if (p->getDirection() == "FWD") {
-		Buss* b;
-		FWDBusses->dequeue(b);
-		if (p->getPType() == 0) {
-			while (b->getType() != "Mbus") {
-				FWDBusses->enqueue(b);
-				FWDBusses->dequeue(b);
+	// for WP 
+	Passenger* p;
+	Buss* b;
+	LinkedQueue<Buss*>tempBFWD(*FWDBusses);
+	LinkedQueue<Buss*>tempBBCK(*BCKBusses);
+	while (!tempBFWD.isEmpty()) {
+		tempBFWD.dequeue(b);
+		if (b->getType() == "Wbus") {
+			while (!WaitingFWDWheelPassengers->isEmpty() && b->getCapacity() != 0) {
+				WaitingFWDWheelPassengers->dequeue(p);
+				b->getOn(p);
 			}
-			b->getOn(p);
 		}
-		else if (p->getPType() == 1) {
-			while (b->getType() != "Wbus") {
-				FWDBusses->enqueue(b);
-				FWDBusses->dequeue(b);
+		
+	}
+	while (!tempBBCK.isEmpty()) {
+		tempBBCK.dequeue(b);
+		if (b->getType() == "Wbus") {
+			while (!WaitingBCKWheelPassengers->isEmpty() && b->getCapacity() != 0) {
+				WaitingBCKWheelPassengers->dequeue(p);
+				b->getOn(p);
 			}
-			b->getOn(p);
 		}
-		else if (p->getPType() == 0) {
-			while (b->getType() != "Mbus") {
-				FWDBusses->enqueue(b);
-				FWDBusses->dequeue(b);
+		
+	}
+}
+
+void Stations::boardPassenger()
+{
+	Passenger* p;
+	Buss* b;
+	LinkedQueue<Buss*>tempBFWD(*FWDBusses);
+	LinkedQueue<Buss*>tempBBCK(*BCKBusses);
+	while (!tempBFWD.isEmpty()) {
+		tempBFWD.dequeue(b);
+		if (b->getType() == "Mbus") {
+			while (!WaitingFWDSpecialPassengers->isEmpty() && b->getCapacity() != 0) {
+				WaitingFWDSpecialPassengers->dequeue(p);
+				b->getOn(p);
 			}
-			b->getOn(p);
+			while (!WaitingFWDNormalPassengers->isEmpty() && b->getCapacity() != 0) {
+				WaitingFWDNormalPassengers->dequeue(p);
+				b->getOn(p);
+			}
 		}
 	}
-
+	while (!tempBBCK.isEmpty()) {
+		tempBBCK.dequeue(b);
+		if (b->getType() == "Mbus") {
+			while (!WaitingBCKSpecialPassengers->isEmpty() && b->getCapacity() != 0) {
+				WaitingBCKSpecialPassengers->dequeue(p);
+				b->getOn(p);
+			}
+			while (!WaitingBCKNormalPassengers->isEmpty() && b->getCapacity() != 0) {
+				WaitingBCKNormalPassengers->dequeue(p);
+				b->getOn(p);
+			}
+		}
+	}
 }
 
 
@@ -266,6 +300,40 @@ void Stations::upgradePassenger(int maxW)
 			WaitingFWDNormalPassengers->enqueue(p);
 		}
 	}
+}
+
+Buss* Stations::removeFWDBus()
+{
+	if (FWDBusses->isEmpty()) {
+		return nullptr;
+	}
+	Buss* b;
+	FWDBusses->dequeue(b);
+	countBuses--;
+	return b;
+}
+
+Buss* Stations::removeBCKBus()
+{
+	if (FWDBusses->isEmpty()) {
+		return nullptr;
+	}
+	Buss* b;
+	FWDBusses->dequeue(b);
+	countBuses--;
+	return b;
+}
+
+void Stations::addFWDBuss(Buss* b)
+{
+	FWDBusses->enqueue(b);
+	countBuses++;
+}
+
+void Stations::addBCKBuss(Buss* b)
+{
+	BCKBusses->enqueue(b);
+	countBuses++;
 }
 
 

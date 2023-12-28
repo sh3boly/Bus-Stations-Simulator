@@ -25,6 +25,7 @@ class Stations
 	int stationNumber;
 	
 	bool isStationZero;
+	int countBuses;
 	int timeBetweenEachStation;
 	int cWP; // count for WP
 	int cSP; // count for SP
@@ -38,8 +39,13 @@ public:
 	void addWaitingBus(Buss* Bus);
 	void addWaitingPassenger(Passenger *p, int number);
 	void removeWaitingPassenger(int id, int number);
-	void boardPassenger(Passenger *p);
+	void boardWPPassenger();
+	void boardPassenger();
 	void upgradePassenger(int maxW);
+	Buss* removeFWDBus();
+	Buss* removeBCKBus();
+	void addFWDBuss(Buss* b);
+	void addBCKBuss(Buss* b);
 	int getStationNumber();
 	bool moveOneNPPassenger();
 	bool moveOneWPPassenger();
@@ -135,8 +141,49 @@ public:
 				station.finished.PrintList();
 			}
 		
+			os << "--------------------------------------------" << endl;
+			LinkedQueue<Buss*>tempBFWD(*station.FWDBusses);
+			LinkedQueue<Buss*>tempBBCK(*station.BCKBusses);
+			Buss* b;
+			//Passenger* Bp;
+			//LinkedQueue<Passenger*>tempBP;
 
-			
+			os << station.countBuses << " Buses at this station: " << endl;
+			int c;
+			while (!tempBFWD.isEmpty()) {
+
+				tempBFWD.dequeue(b);
+					os << "B" << b->getID();
+					os << "[" << b->getBusDirection();
+					os << ", ";
+					os << b->getType();
+					os << ", " << b->getCapacity() << "] ";
+					c = b->getCountPassenger();
+					os << "{";
+					if (c > 0) {
+						for (int i = 1; i < c; i++) {
+							if (i == c - 1) {
+								os << b->getPassengerID(i);
+							}
+							else {
+								os << b->getPassengerID(i) << ", ";
+							}
+						}
+					}
+					os << "}" << endl;
+			}
+			while (!tempBBCK.isEmpty()) {
+				tempBBCK.dequeue(b);
+				if (c == 1) {
+					os << b->getID();
+					c--;
+				}
+				else {
+					os << b->getID() << ",";
+					c--;
+				}
+			}
+			os << endl;
 			return os;
 		}
 
