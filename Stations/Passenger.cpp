@@ -12,6 +12,7 @@ Passenger::Passenger(int id, int h, int min, int strt, int end, int typ, string 
 	endStation = end;
 	pType = typ;
 	spType = styp;
+	waitTime = 0;
 	setDirection();
 
 }
@@ -79,6 +80,11 @@ int Passenger::getPType()
 }
 
 
+
+void Passenger::incrementWaitingTime()
+{
+	waitTime++;
+}
 
 string Passenger::getSType()
 {

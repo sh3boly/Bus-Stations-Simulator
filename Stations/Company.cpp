@@ -14,9 +14,9 @@ Company::Company()
 	countEvents = 0; s = 0; st = 0; WBus_count = 0; MBus_count = 0; WBus_capactiy = 0; MBus_capacity = 0; maxW = 0; getOnOffTime = 0; J = 0; CWBus = 0; CMBus = 0;
 	FinishList = new LinkedQueue<Passenger*>;
 	countOfArrivalEvents = 0; countEvents = 0; countOfLeaveEvents = 0; countOfPassengers = 0;
-	/*WaitingNormalPassengers = new LinkedQueue<Passenger*>;
-	WaitingSpecialPassengers = new PriorityQueue<Passenger*>;
-	WaitingWheelPassengers = new LinkedQueue<Passenger*>;*/
+	MovingBCKBusses = new LinkedQueue<Buss*>;
+	MovingFWDBusses = new LinkedQueue<Buss*>;
+
 
 
 }
@@ -228,30 +228,65 @@ void Company::Simulate()
 				}
 				
 			}*/
+		incrementWaitTime();
+		incrementJourneyTime();
 		releaseBus();
 		boardPassnegers();
+		
+		
+		moveBuses();
 		if (choice == 1) {
 			pUI->printInteractive();
 		}
-		minutes = minutes + 5;
+		minutes = minutes + 1;
 
 		}
 }
-
+void Company::incrementWaitTime() {
+	for (int i = 1; i < s+1; i++) {
+		busStations[i]->incrementPassengerWaitTime();
+	}
+}
 void Company::releaseBus()
 {
 	Buss* b;
 	if (minutes % 15 == 0) {
 		b = busStations[0]->removeFWDBus();
-		busStations[1]->addFWDBuss(b);
+		b->setNextStation(1);
+		MovingFWDBusses->enqueue(b);
+
 	}
 }
 
+void Company::moveBuses()
+{
+	Buss* b;
+	LinkedQueue<Buss*>* tempFWD(MovingFWDBusses);
+	while (!tempFWD->isEmpty()) {
+		tempFWD->dequeue(b);
+		if (b->getJourneyTime() == st) {
+			busStations[b->getNextStation()]->addFWDBuss(b);
+		}
+	}
+}
+
+void Company::incrementJourneyTime()
+{
+	Buss* b;
+	LinkedQueue<Buss*>* tempFWD(MovingFWDBusses);
+	LinkedQueue<Buss*>* tempBCK(MovingBCKBusses);
+	while (!tempFWD->isEmpty()) {
+		tempFWD->dequeue(b);
+		b->incrementJourneyTime();
+	}
+}
+
+
 void Company::boardPassnegers()
 {
-	for (int i = 0; i < s; i++) {
-		busStations[i + 1]->boardPassenger();
-		busStations[i + 1]->boardWPPassenger();
+	for (int i = 1; i < s+1; i++) {
+		busStations[i]->boardPassenger();
+		busStations[i]->boardWPPassenger();
 	}
 }
 

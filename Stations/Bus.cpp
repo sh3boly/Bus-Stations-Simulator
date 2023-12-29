@@ -171,6 +171,16 @@ string Buss::getType() const
     return bussType;
 }
 
+void Buss::setNextStation(int n)
+{
+    nextStation = n;
+}
+
+int Buss::getNextStation()
+{
+    return nextStation;
+}
+
 void Buss::setCapacity(int bc)
 {
     capacity = bc;
@@ -181,6 +191,11 @@ int Buss::getCountPassenger()
     return countPassengers;
 }
 
+void Buss::incrementJourneyTime()
+{
+    journeyTime++;
+}
+
 int Buss::getCapacity() const
 {
     return capacity;
@@ -189,6 +204,11 @@ int Buss::getCapacity() const
 int Buss::getRemCapacity()
 {
     return capacity;
+}
+
+int Buss::getJourneyTime()
+{
+    return journeyTime;
 }
 
 int Buss::getPassengerID(int no)

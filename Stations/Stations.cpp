@@ -31,6 +31,11 @@ Stations::Stations(int t, int no)
 
 }
 
+int Stations::getTBetweenEachStation()
+{
+	return timeBetweenEachStation;
+}
+
 void Stations::addWaitingBus(Buss* Bus)
 {
 	if (Bus->getBusDirection() == "FWD") {
@@ -271,6 +276,40 @@ int Stations::getCNP()
 int Stations::getCWP()
 {
 	return cWP;
+}
+void Stations::incrementPassengerWaitTime()
+{
+	Passenger* p;
+	LinkedQueue<Passenger*> temp(*WaitingFWDNormalPassengers);
+	while (!temp.isEmpty()) {
+		temp.dequeue(p);
+		p->incrementWaitingTime();
+	}
+	LinkedQueue<Passenger*> temp1(*WaitingBCKNormalPassengers);
+	while (!temp1.isEmpty()) {
+		temp1.dequeue(p);
+		p->incrementWaitingTime();
+	}
+	PriorityQueue<Passenger*> temp2(*WaitingFWDSpecialPassengers);
+	while (!temp2.isEmpty()) {
+		temp2.dequeue(p);
+		p->incrementWaitingTime();
+	}
+	PriorityQueue<Passenger*> temp3(*WaitingBCKSpecialPassengers);
+	while (!temp3.isEmpty()) {
+		temp3.dequeue(p);
+		p->incrementWaitingTime();
+	}
+	LinkedQueue<Passenger*> temp4(*WaitingBCKWheelPassengers);
+	while (!temp4.isEmpty()) {
+		temp4.dequeue(p);
+		p->incrementWaitingTime();
+	}
+	LinkedQueue<Passenger*> temp5(*WaitingFWDWheelPassengers);
+	while (!temp5.isEmpty()) {
+		temp5.dequeue(p);
+		p->incrementWaitingTime();
+	}
 }
 /*
 Upgrade Passenger:

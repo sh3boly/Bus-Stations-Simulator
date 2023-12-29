@@ -36,6 +36,7 @@ class Stations
 public:
 	Stations();
 	Stations(int time, int no); 
+	int getTBetweenEachStation();
 	void addWaitingBus(Buss* Bus);
 	void addWaitingPassenger(Passenger *p, int number);
 	void removeWaitingPassenger(int id, int number);
@@ -53,6 +54,7 @@ public:
 	int getCSP();
 	int getCNP();
 	int getCWP();
+	void incrementPassengerWaitTime();
 	friend ostream& operator<<(ostream& os, const Stations& station) {
 		// SP Pritning code
 			os << station.cSP << " Waiting SP";

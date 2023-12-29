@@ -36,6 +36,7 @@ public:
 	int getEndStation();
 	int getPType();
 
+	void incrementWaitingTime();
 	string getSType();
 	void promotePassenger();
 	void setDirection();

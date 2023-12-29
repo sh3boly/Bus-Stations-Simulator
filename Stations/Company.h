@@ -31,6 +31,11 @@ class Company
 	int countOfLeaveEvents; // count of leave events
 	int countOfPassengers;
 	int noP, noWP, noNP, noSP;
+
+	LinkedQueue<Buss*>* MovingFWDBusses;
+	LinkedQueue<Buss*>* MovingBCKBusses;
+
+
 	LinkedQueue<Passenger*>* FinishList;
 
 public:
@@ -39,6 +44,7 @@ public:
 	bool readInput();
 	bool writeOutput();
 	void addPassenger(Passenger *p, int number);
+	void incrementWaitTime();
 	int getHour();
 	int getMinutes();
 	int getNumberOfStations();
@@ -49,6 +55,8 @@ public:
 	Stations getStation(int number);
 	void Simulate();
 	void releaseBus();
+	void moveBuses();
+	void incrementJourneyTime();
 	void boardPassnegers();
 	string changeTime(int mins); // changes time from minutes to HH::MM
 };
