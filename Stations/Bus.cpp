@@ -155,6 +155,7 @@ Buss::Buss(int id, int cap)
     maintenanceTime = 0;
     currentJourney = 0;
     journeysCompleted = 0;
+    countPassengers = 0;
     currentStation = 0;
     isMaintenance = false;
     busDirecton = "FWD";
@@ -214,9 +215,12 @@ int Buss::getJourneyTime()
 int Buss::getPassengerID(int no)
 {
     Passenger* p{};
-    LinkedQueue<Passenger*>* tempBusPassengers(busPassengers);
+    LinkedQueue<Passenger*> tempBusPassengers(*busPassengers);
+    if (tempBusPassengers.isEmpty()) {
+        return 0;
+    }
     for (int i = 0; i < no; i++) {
-        tempBusPassengers->dequeue(p);
+        tempBusPassengers.dequeue(p);
     }
     return p->getID();
 }

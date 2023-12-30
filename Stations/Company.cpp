@@ -228,17 +228,19 @@ void Company::Simulate()
 				}
 				
 			}*/
-		incrementWaitTime();
-		incrementJourneyTime();
-		releaseBus();
-		boardPassnegers();
+		//for (int i = 0; i < 20; i++) {
+			incrementWaitTime();
+			incrementJourneyTime();
+			releaseBus();
+			boardPassnegers();
+			moveBuses();
+	//	}
 		
-		
-		moveBuses();
+		//moveBuses();
 		if (choice == 1) {
 			pUI->printInteractive();
 		}
-		minutes = minutes + 1;
+		minutes = minutes ++;
 
 		}
 }
@@ -261,22 +263,30 @@ void Company::releaseBus()
 void Company::moveBuses()
 {
 	Buss* b;
-	LinkedQueue<Buss*>* tempFWD(MovingFWDBusses);
-	while (!tempFWD->isEmpty()) {
-		tempFWD->dequeue(b);
-		if (b->getJourneyTime() == st) {
+	LinkedQueue<Buss*>tempFWD(*MovingFWDBusses);
+	while (!MovingFWDBusses->isEmpty()) {
+		MovingFWDBusses->dequeue(b);
+		tempFWD.dequeue(b);
+		if (b->getJourneyTime() >= st) {
 			busStations[b->getNextStation()]->addFWDBuss(b);
 		}
+		else {
+			tempFWD.enqueue(b);
+		}
+	}
+	while (!tempFWD.isEmpty()) {
+		tempFWD.dequeue(b);
+		MovingFWDBusses->enqueue(b);
 	}
 }
 
 void Company::incrementJourneyTime()
 {
 	Buss* b;
-	LinkedQueue<Buss*>* tempFWD(MovingFWDBusses);
-	LinkedQueue<Buss*>* tempBCK(MovingBCKBusses);
-	while (!tempFWD->isEmpty()) {
-		tempFWD->dequeue(b);
+	LinkedQueue<Buss*> tempFWD(*MovingFWDBusses);
+	LinkedQueue<Buss*> tempBCK(*MovingBCKBusses);
+	while (!tempFWD.isEmpty()) {
+		tempFWD.dequeue(b);
 		b->incrementJourneyTime();
 	}
 }

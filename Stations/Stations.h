@@ -120,7 +120,7 @@ public:
 			LinkedQueue<Passenger*>tempQNFWD(*station.WaitingFWDNormalPassengers);
 			LinkedQueue<Passenger*>tempQNBCK(*station.WaitingBCKNormalPassengers);
 
-			os << station.cNP << " Waiting WP";
+			os << station.cNP << " Waiting NP";
 			//tempN = station.WaitingNormalPassengers;
 			Passenger* p2;
 			os << "FWD[";
@@ -163,13 +163,11 @@ public:
 					c = b->getCountPassenger();
 					os << "{";
 					if (c > 0) {
-						for (int i = 1; i < c; i++) {
-							if (i == c - 1) {
+						for (int i = 1; i < c+1 ; i++) {
+							if (i == c)
 								os << b->getPassengerID(i);
-							}
-							else {
+							else
 								os << b->getPassengerID(i) << ", ";
-							}
 						}
 					}
 					os << "}" << endl;

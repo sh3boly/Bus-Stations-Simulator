@@ -365,6 +365,8 @@ Buss* Stations::removeBCKBus()
 
 void Stations::addFWDBuss(Buss* b)
 {
+	b->setCurrentStation(stationNumber);
+	b->setNextStation(stationNumber++);
 	FWDBusses->enqueue(b);
 	countBuses++;
 }
