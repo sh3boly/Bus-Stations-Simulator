@@ -14,6 +14,7 @@ Passenger::Passenger(int id, int h, int min, int strt, int end, int typ, string 
 	spType = styp;
 	waitTime = 0;
 	setDirection();
+    promoted = false;
 
 }
 
@@ -94,6 +95,7 @@ string Passenger::getSType()
 void Passenger::promotePassenger()
 {
 	spType = 1;
+    promoted = true;
 }
 
 void Passenger::setDirection()

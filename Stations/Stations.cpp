@@ -325,6 +325,7 @@ void Stations::upgradePassenger(int maxW)
 		WaitingBCKNormalPassengers->dequeue(p);
 		if (p->getWaitTime() > maxW) {
 			WaitingBCKSpecialPassengers->enqueue(p, 2);
+			p->promotePassenger();
 		}
 		else {
 			WaitingBCKNormalPassengers->enqueue(p);
@@ -334,6 +335,7 @@ void Stations::upgradePassenger(int maxW)
 		WaitingFWDNormalPassengers->dequeue(p);
 		if (p->getWaitTime() > maxW) {
 			WaitingFWDSpecialPassengers->enqueue(p, 2);
+			p->promotePassenger();
 		}
 		else {
 			WaitingFWDNormalPassengers->enqueue(p);
