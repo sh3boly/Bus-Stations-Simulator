@@ -96,18 +96,45 @@ bool Company::writeOutput()
 	if (myFile.is_open()) {
 		myFile << "FT\tID\t\tAT\tWT\tT" << endl;
 		Passenger* p;
+		float AvgWaitTime = 0;
+		int AutoPromotedPassengers = 0;
+		int Busses = 0;
+		int AvgBusTime = 0;
+		int AvgUtilization = 0;
+		int AvgTripTime = 0;
 		while (!FinishList->isEmpty()) {
 			FinishList->dequeue(p);
 			myFile << changeTime(p->getfinishTime()) << "\t" << p->getID() << "\t" << changeTime(p->getArrivalTime()) << "\t"
 				<< changeTime(p->getWaitTime()) << "\t" << changeTime(p->getfinishTime() - p->getMoveTime()) << endl;
-
+			AvgWaitTime = AvgWaitTime + p->getWaitTime();
+			
+			if (p->promoted) {
+				AutoPromotedPassengers++;
+			}
+			countOfPassengers++;
+			// calculate the AvgTripTime
+			// calculate the AvgUtilization
+			AvgTripTime = AvgTripTime + p->getfinishTime() - p->getArrivalTime();
 		}
+		Company::setNumberOfPassengers();
+		AvgWaitTime = AvgWaitTime / noP;
+		AvgTripTime = AvgTripTime / noP;
+		myFile << "Avg Wait time: " << AvgWaitTime << endl;
 		myFile << "Passengers: " << noP << "\t[NP: " << noNP << ", SP: " << noSP << ", WP: " << noWP << "]" << endl;
-		myFile << "pasenger Avg wait time: " << endl;
-		myFile << "Auto-promoted passenger: " << endl;
-		myFile << "Busses: " << endl;
-		myFile << "Avg Bus time: " << endl;
-		myFile << "Avg Utilization: " << endl;
+		myFile << "pasenger Avg wait time: " << AvgWaitTime << endl;
+		myFile << "Passengers Avg Trip time: " << AvgTripTime << endl;
+		myFile << "Auto-promoted passenger: " << AutoPromotedPassengers << endl;
+		myFile << "Busses: " << MBus_count+WBus_count << "\t[MB: " << MBus_count << ", WB: " << WBus_count << "]" << endl;
+		// loop on the busses and calculate the AvgBusTime and AvgUtilization
+		while(!MovingFWDBusses->isEmpty()){
+			Buss* b;
+			MovingFWDBusses->dequeue(b);
+			AvgBusTime = AvgBusTime + b->getJourneyTime();
+			AvgUtilization = AvgUtilization + b->getCapacity();
+		}
+		AvgBusTime = AvgBusTime / (MBus_count + WBus_count);
+		myFile << "Avg Bus time: " << AvgBusTime << endl;
+		myFile << "Avg Utilization: " << AvgUtilization << endl;
 		return true;
 	}
 	else {

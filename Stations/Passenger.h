@@ -17,6 +17,7 @@ class Passenger
 	bool isMoving; // is a moving passenger
 	int maxW; // maximum waiting time
 	string spType;
+    bool promoted;
 
 public:
 	Passenger();
