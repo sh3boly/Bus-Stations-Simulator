@@ -218,48 +218,39 @@ void Stations::boardPassenger()
 }
 
 
-//void Stations::unboardPassenger()
-//{
-//	Passenger* p;
-//	Buss* b;
-//	LinkedQueue<Buss*>tempBFWD(*FWDBusses);
-//	LinkedQueue<Buss*>tempBBCK(*BCKBusses);
-//	while (!tempBFWD.isEmpty()) {
-//		tempBFWD.dequeue(b);
-//		if (b->getType() == Mbus) {
-//			while (b->getRemCapacity != b->getCapacity() ){
-//				b->getOff(p);
-//			}
-//			while (!WaitingFWDNormalPassengers && b->getCapacity() != 0) {
-//				WaitingFWDNormalPassengers->dequeue(p);
-//				b->getOn(p);
-//			}
-//		}
-//	}
-//	while (!tempBBCK.isEmpty()) {
-//		tempBBCK.dequeue(b);
-//		if (b->getType() == Mbus) {
-//			while (!WaitingBCKSpecialPassengers->isEmpty() && b->getCapacity() != 0) {
-//				WaitingBCKSpecialPassengers->dequeue(p);
-//				b->getOn(p);
-//			}
-//			while (!WaitingBCKNormalPassengers->isEmpty() && b->getCapacity() != 0) {
-//				WaitingBCKNormalPassengers->dequeue(p);
-//				b->getOn(p);
-//			}
-//		}
-//	}
-//}
-
 void Stations::unboardPassenger()
 {
 	Passenger* p;
 	Buss* b;
-	while (b->getRemCapacity() != b->getCapacity())
-	{
-		b->getOff(p);
+	LinkedQueue<Buss*>tempBFWD(*FWDBusses);
+	LinkedQueue<Buss*>tempBBCK(*BCKBusses);
+	while (!tempBFWD.isEmpty()) {
+		tempBFWD.dequeue(b);
+		if (b->getType() == "Mbus") {
+			while (b->getRemCapacity() != b->getCapacity() ){
+				b->getOff(p);
+			}
+		}
+	}
+	while (!tempBBCK.isEmpty()) {
+		tempBBCK.dequeue(b);
+		if (b->getType() == "Mbus") {
+			while (b->getRemCapacity() != b->getCapacity() ){
+				b->getOff(p);
+			}
+		}
 	}
 }
+
+//void Stations::unboardPassenger()
+//{
+//	Passenger* p;
+//	Buss* b;
+//	while (b->getRemCapacity() != b->getCapacity())
+//	{
+//		b->getOff(p);
+//	}
+//}
 
 
 
