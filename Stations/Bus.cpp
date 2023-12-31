@@ -164,7 +164,7 @@ Buss::Buss(int id, int cap)
 }
 
 
-void Buss::setType(char T)
+void Buss::setType(string T)
 {
     if (T == 'm')
         bussType = Mbus;
