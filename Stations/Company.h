@@ -35,8 +35,8 @@ class Company
 	LinkedQueue<Buss*>* MovingFWDBusses;
 	LinkedQueue<Buss*>* MovingBCKBusses;
 
-	LinkedList<Buss*>* checkMbus;
-	LinkedList<Buss*>* checkWbus;
+	LinkedQueue<Buss*>* checkMbus;
+	LinkedQueue<Buss*>* checkWbus;
 
 	LinkedQueue<Passenger*>* FinishList;
 

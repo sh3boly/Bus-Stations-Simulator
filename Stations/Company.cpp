@@ -325,14 +325,14 @@ void Company::addBusToCheckup()
 	Buss* B;
 	LinkedQueue<Buss*>LQ, LQ1;
 	
-	busStations[getNumberOfStations()].checkupBus(LQ, LQ1);
+	busStations[getNumberOfStations()]->checkupBus(LQ, LQ1);
 	while (LQ.dequeue(B)) {
 		B->setMaintenanceTime(time);
-		checkMbus.enqueue(B);
+		checkMbus->enqueue(B);
 	}
 	while (LQ1.dequeue(B)) {
 		B->setMaintenanceTime(time);
-		checkWbus.enqueue(B);
+		checkWbus->enqueue(B);
 	}
 }
 void Company:: movingToWaiting() {
@@ -343,8 +343,8 @@ void Company:: movingToWaiting() {
 	if (MovingFWDBusses->peek(B))
 	{
 		int move = B->getstartTime();
-		if (time-move >= Stations::getTBetweenEachStation()) {
-			MovingFWDBusses.dequeue(B);
+		if (time-move >= busStations[0]->getTBetweenEachStation()) {
+			MovingFWDBusses->dequeue(B);
 			int pos = B->getNextStation();
 			if (pos == getNumberOfStations())
 			{
@@ -359,7 +359,7 @@ void Company:: movingToWaiting() {
 	if (MovingBCKBusses->peek(B)) {
 		int move = B->getstartTime();
 		int pos = B->getNextStation();
-		if (time - move >= Stations::getTBetweenEachStation()) {
+		if (time - move >= busStations[0]->getTBetweenEachStation()) {
 			MovingBCKBusses->dequeue(B);
 			if (pos == 1) {
 				B->incrementJourneysCompleted();
