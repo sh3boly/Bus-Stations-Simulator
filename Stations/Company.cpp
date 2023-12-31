@@ -35,13 +35,13 @@ bool Company::readInput()
 		}
 		for (int i = 0; i < WBus_count; i++) {
 			Buss* b = new Buss(i, WBus_capactiy);
-			b->setType('w');
+			b->setType("w");
 			b->setBusDirection("FWD");
 			busStations[0]->addWaitingBus(b);
 		}
 		for (int i = WBus_count; i < MBus_count + WBus_count; i++) {
 			Buss* b = new Buss(i, MBus_capacity);
-			b->setType('m');
+			b->setType("m");
 			b->setBusDirection("FWD");
 			busStations[0]->addWaitingBus(b);
 		}
