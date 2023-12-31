@@ -163,7 +163,7 @@ void Stations::boardWPPassenger()
 	LinkedQueue<Buss*>tempBBCK(*BCKBusses);
 	while (!tempBFWD.isEmpty()) {
 		tempBFWD.dequeue(b);
-		if (b->getType() == Wbus) {
+		if (b->getType() == "Wbus") {
 			while (!WaitingFWDWheelPassengers->isEmpty() && b->getCapacity() != 0) {
 				WaitingFWDWheelPassengers->dequeue(p);
 				b->getOn(p);
@@ -173,7 +173,7 @@ void Stations::boardWPPassenger()
 	}
 	while (!tempBBCK.isEmpty()) {
 		tempBBCK.dequeue(b);
-		if (b->getType() == Wbus) {
+		if (b->getType() == "Wbus") {
 			while (!WaitingBCKWheelPassengers->isEmpty() && b->getCapacity() != 0) {
 				WaitingBCKWheelPassengers->dequeue(p);
 				b->getOn(p);
@@ -191,7 +191,7 @@ void Stations::boardPassenger()
 	LinkedQueue<Buss*>tempBBCK(*BCKBusses);
 	while (!tempBFWD.isEmpty()) {
 		tempBFWD.dequeue(b);
-		if (b->getType() == Mbus) {
+		if (b->getType() == "Mbus") {
 			while (!WaitingFWDSpecialPassengers->isEmpty() && b->getRemCapacity() != 0) {
 				WaitingFWDSpecialPassengers->dequeue(p);
 				b->getOn(p);
@@ -204,7 +204,7 @@ void Stations::boardPassenger()
 	}
 	while (!tempBBCK.isEmpty()) {
 		tempBBCK.dequeue(b);
-		if (b->getType() == Mbus) {
+		if (b->getType() == "Mbus") {
 			while (!WaitingBCKSpecialPassengers->isEmpty() && b->getRemCapacity() != 0) {
 				WaitingBCKSpecialPassengers->dequeue(p);
 				b->getOn(p);
@@ -364,12 +364,12 @@ void Stations::incrementPassengerWaitTime()
 void Stations:: checkupBus(LinkedQueue<Buss*>& T, LinkedQueue<Buss*>& T1) {
 	Buss* B;
 	LinkedQueue<Buss*>temp, temp1;
-	while (FWDBusses.dequeue(B)) {
+	while (FWDBusses->dequeue(B)) {
 		if (B->getIsMaintenance()) {
-			if (B->getType() == Mbus) {
+			if (B->getType() == "Mbus") {
 				T.enqueue(B);
 			}
-			if (B->getType() == Wbus) {
+			if (B->getType() == "Wbus") {
 				T1.enqueue(B);
 			}
 		}
@@ -378,12 +378,12 @@ void Stations:: checkupBus(LinkedQueue<Buss*>& T, LinkedQueue<Buss*>& T1) {
 			temp.enqueue(B);
 		}
 	}
-	while (BCKBusses.dequeue(B)) {
+	while (BCKBusses->dequeue(B)) {
 		if (B->getIsMaintenance()) {
-			if (B->getType() == Mbus) {
+			if (B->getType() == "Mbus") {
 				T.enqueue(B);
 			}
-			if (B->getType() == Wbus) {
+			if (B->getType() == "Wbus") {
 				T1.enqueue(B);
 			}
 		}
@@ -393,10 +393,10 @@ void Stations:: checkupBus(LinkedQueue<Buss*>& T, LinkedQueue<Buss*>& T1) {
 		}
 	}
 	while (temp.dequeue(B)) {
-		FWDBusses.enqueue(B);
+		FWDBusses->enqueue(B);
 	}
 	while (temp1.dequeue(B)) {
-		BCKBusses.enqueue(B);
+		BCKBusses->enqueue(B);
 	}
 }
 

@@ -35,13 +35,13 @@ bool Company::readInput()
 		}
 		for (int i = 0; i < WBus_count; i++) {
 			Buss* b = new Buss(i, WBus_capactiy);
-			b->setType("w");
+			b->setType('w');
 			b->setBusDirection("FWD");
 			busStations[0]->addWaitingBus(b);
 		}
 		for (int i = WBus_count; i < MBus_count + WBus_count; i++) {
 			Buss* b = new Buss(i, MBus_capacity);
-			b->setType("m");
+			b->setType('m');
 			b->setBusDirection("FWD");
 			busStations[0]->addWaitingBus(b);
 		}
@@ -360,7 +360,7 @@ void Company:: movingToWaiting() {
 		int move = B->getstartTime();
 		int pos = B->getNextStation();
 		if (time - move >= Stations::getTBetweenEachStation()) {
-			MovingBCKBusses.dequeue(B);
+			MovingBCKBusses->dequeue(B);
 			if (pos == 1) {
 				B->incrementJourneysCompleted();
 				busStations[pos]->addFWDBuss(B);
