@@ -348,7 +348,7 @@ void Company:: movingToWaiting() {
 			int pos = B->getNextStation();
 			if (pos == getNumberOfStations())
 			{
-				B->incrementJourneysCompleted();
+				B->incrementJourneysCompleted(J);
 				busStations[pos]->addBCKBuss(B);
 			}
 			else {
@@ -362,7 +362,7 @@ void Company:: movingToWaiting() {
 		if (time - move >= busStations[0]->getTBetweenEachStation()) {
 			MovingBCKBusses->dequeue(B);
 			if (pos == 1) {
-				B->incrementJourneysCompleted();
+				B->incrementJourneysCompleted(J);
 				busStations[pos]->addFWDBuss(B);
 			}
 			else {

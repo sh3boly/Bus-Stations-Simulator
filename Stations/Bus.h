@@ -80,7 +80,7 @@ private:
 
 public:
     Buss(int id, int cap);
-    void setType(char T);
+    void setType(string T);
     string getType() ;
     
     void setNextStation(int n);
