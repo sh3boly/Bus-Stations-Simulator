@@ -35,6 +35,8 @@ class Company
 	LinkedQueue<Buss*>* MovingFWDBusses;
 	LinkedQueue<Buss*>* MovingBCKBusses;
 
+	LinkedList<Buss*>* checkMbus;
+	LinkedList<Buss*>* checkWbus;
 
 	LinkedQueue<Passenger*>* FinishList;
 
@@ -58,6 +60,9 @@ public:
 	void moveBuses();
 	void incrementJourneyTime();
 	void boardPassnegers();
+	void unboardPassengers();
 	string changeTime(int mins); // changes time from minutes to HH::MM
+	void addBusToCheckup();
+	void movingToWaiting();
 };
 

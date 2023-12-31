@@ -155,19 +155,24 @@ Buss::Buss(int id, int cap)
     maintenanceTime = 0;
     currentJourney = 0;
     journeysCompleted = 0;
-    countPassengers = 0;
+    journeyTime = 0;
+    startTime = 0;
     currentStation = 0;
     isMaintenance = false;
     busDirecton = "FWD";
     busPassengers = new LinkedQueue<Passenger*>;
 }
 
-void Buss::setType(string T)
+
+void Buss::setType(char T)
 {
-    bussType = T;
+    if (T == "m")
+        bussType = Mbus;
+    if (T == "w")
+        bussType = Wbus;
 }
 
-string Buss::getType() const
+string Buss::getType() 
 {
     return bussType;
 }
@@ -204,7 +209,7 @@ int Buss::getCapacity() const
 
 int Buss::getRemCapacity()
 {
-    return capacity;
+    return capacity - countPassengers;
 }
 
 int Buss::getJourneyTime()
@@ -215,12 +220,9 @@ int Buss::getJourneyTime()
 int Buss::getPassengerID(int no)
 {
     Passenger* p{};
-    LinkedQueue<Passenger*> tempBusPassengers(*busPassengers);
-    if (tempBusPassengers.isEmpty()) {
-        return 0;
-    }
+    LinkedQueue<Passenger*>* tempBusPassengers(busPassengers);
     for (int i = 0; i < no; i++) {
-        tempBusPassengers.dequeue(p);
+        tempBusPassengers->dequeue(p);
     }
     return p->getID();
 }
@@ -228,6 +230,16 @@ int Buss::getPassengerID(int no)
 int Buss::getID()
 {
     return busID;
+}
+
+void Buss::setstartTime(int s)
+{
+    startTime = s;
+}
+
+int Buss::getstartTime() const
+{
+    return startTime;
 }
 
 void Buss::setMaintenanceTime(int t)
@@ -327,4 +339,6 @@ void Buss::getOn(Passenger* p)
 
 void Buss::getOff(Passenger* p)
 {
+    busPassengers->dequeue(p);
+    countPassengers--;
 }

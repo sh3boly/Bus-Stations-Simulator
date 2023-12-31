@@ -57,6 +57,9 @@
 #include "LinkedQueue.h"
 using namespace std;
 
+enum BussType {
+    Mbus,Wbus
+};
 class Buss
 {
 private:
@@ -71,13 +74,14 @@ private:
     bool isMaintenance;
     int countPassengers;
     int nextStation;
+    int startTime;
     string busDirecton;
     LinkedQueue<Passenger*>* busPassengers;
 
 public:
     Buss(int id, int cap);
-    void setType(string T);
-    string getType() const;
+    void setType(char T);
+    string getType() ;
     
     void setNextStation(int n);
     int getNextStation();
@@ -90,6 +94,9 @@ public:
     int getJourneyTime();
     int getPassengerID(int no);
     int getID();
+
+    void setstartTime(int s);
+    int getstartTime() const;
 
     void setMaintenanceTime(int t);
     int getMaintenanceTime() const;

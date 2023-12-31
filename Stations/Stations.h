@@ -10,12 +10,18 @@ class Stations
 	// Special Passegners queues
 	PriorityQueue<Passenger*>* WaitingFWDSpecialPassengers;
 	PriorityQueue<Passenger*>* WaitingBCKSpecialPassengers;
+	//PriorityQueue<Passenger*>* getOffFWDSpecialPassengers;
+	//PriorityQueue<Passenger*>* getOffBCKSpecialPassengers;
 	// Wheel passengers queue
 	LinkedQueue<Passenger*>* WaitingFWDWheelPassengers;
 	LinkedQueue<Passenger*>* WaitingBCKWheelPassengers;
+	//LinkedQueue<Passenger*>* getOffFWDWheelPassengers;
+	//LinkedQueue<Passenger*>* getOffBCKWheelPassengers;
 	// Normal Passenger Queue
 	LinkedQueue<Passenger*>* WaitingFWDNormalPassengers;
 	LinkedQueue<Passenger*>* WaitingBCKNormalPassengers;
+	//LinkedQueue<Passenger*>* getOffFWDNormalPassengers;
+	//LinkedQueue<Passenger*>* getOffBCKNormalPassengers;
 	//LinkedQueue<int>* Busses;
 	LinkedQueue<Buss*>* FWDBusses;
 	LinkedQueue<Buss*>* BCKBusses;
@@ -42,6 +48,7 @@ public:
 	void removeWaitingPassenger(int id, int number);
 	void boardWPPassenger();
 	void boardPassenger();
+	void unboardPassenger();
 	void upgradePassenger(int maxW);
 	Buss* removeFWDBus();
 	Buss* removeBCKBus();
@@ -55,6 +62,7 @@ public:
 	int getCNP();
 	int getCWP();
 	void incrementPassengerWaitTime();
+	void checkupBus(LinkedQueue<Buss*>& C, LinkedQueue<Buss*>& C1);
 	friend ostream& operator<<(ostream& os, const Stations& station) {
 		// SP Pritning code
 			os << station.cSP << " Waiting SP";
@@ -120,7 +128,7 @@ public:
 			LinkedQueue<Passenger*>tempQNFWD(*station.WaitingFWDNormalPassengers);
 			LinkedQueue<Passenger*>tempQNBCK(*station.WaitingBCKNormalPassengers);
 
-			os << station.cNP << " Waiting NP";
+			os << station.cNP << " Waiting WP";
 			//tempN = station.WaitingNormalPassengers;
 			Passenger* p2;
 			os << "FWD[";
@@ -163,11 +171,13 @@ public:
 					c = b->getCountPassenger();
 					os << "{";
 					if (c > 0) {
-						for (int i = 1; i < c+1 ; i++) {
-							if (i == c)
+						for (int i = 1; i < c; i++) {
+							if (i == c - 1) {
 								os << b->getPassengerID(i);
-							else
+							}
+							else {
 								os << b->getPassengerID(i) << ", ";
+							}
 						}
 					}
 					os << "}" << endl;

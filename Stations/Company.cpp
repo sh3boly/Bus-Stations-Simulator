@@ -16,6 +16,8 @@ Company::Company()
 	countOfArrivalEvents = 0; countEvents = 0; countOfLeaveEvents = 0; countOfPassengers = 0;
 	MovingBCKBusses = new LinkedQueue<Buss*>;
 	MovingFWDBusses = new LinkedQueue<Buss*>;
+	checkMbus = new LinkedQueue<Buss*>;
+	checkWbus = new LinkedQueue<Buss*>;
 
 
 
@@ -33,13 +35,13 @@ bool Company::readInput()
 		}
 		for (int i = 0; i < WBus_count; i++) {
 			Buss* b = new Buss(i, WBus_capactiy);
-			b->setType("Wbus");
+			b->setType("w");
 			b->setBusDirection("FWD");
 			busStations[0]->addWaitingBus(b);
 		}
 		for (int i = WBus_count; i < MBus_count + WBus_count; i++) {
 			Buss* b = new Buss(i, MBus_capacity);
-			b->setType("Mbus");
+			b->setType("m");
 			b->setBusDirection("FWD");
 			busStations[0]->addWaitingBus(b);
 		}
@@ -96,45 +98,18 @@ bool Company::writeOutput()
 	if (myFile.is_open()) {
 		myFile << "FT\tID\t\tAT\tWT\tT" << endl;
 		Passenger* p;
-		float AvgWaitTime = 0;
-		int AutoPromotedPassengers = 0;
-		int Busses = 0;
-		int AvgBusTime = 0;
-		int AvgUtilization = 0;
-		int AvgTripTime = 0;
 		while (!FinishList->isEmpty()) {
 			FinishList->dequeue(p);
 			myFile << changeTime(p->getfinishTime()) << "\t" << p->getID() << "\t" << changeTime(p->getArrivalTime()) << "\t"
 				<< changeTime(p->getWaitTime()) << "\t" << changeTime(p->getfinishTime() - p->getMoveTime()) << endl;
-			AvgWaitTime = AvgWaitTime + p->getWaitTime();
-			
-			if (p->promoted) {
-				AutoPromotedPassengers++;
-			}
-			countOfPassengers++;
-			// calculate the AvgTripTime
-			// calculate the AvgUtilization
-			AvgTripTime = AvgTripTime + p->getfinishTime() - p->getArrivalTime();
+
 		}
-		Company::setNumberOfPassengers();
-		AvgWaitTime = AvgWaitTime / noP;
-		AvgTripTime = AvgTripTime / noP;
-		myFile << "Avg Wait time: " << AvgWaitTime << endl;
 		myFile << "Passengers: " << noP << "\t[NP: " << noNP << ", SP: " << noSP << ", WP: " << noWP << "]" << endl;
-		myFile << "pasenger Avg wait time: " << AvgWaitTime << endl;
-		myFile << "Passengers Avg Trip time: " << AvgTripTime << endl;
-		myFile << "Auto-promoted passenger: " << AutoPromotedPassengers << endl;
-		myFile << "Busses: " << MBus_count+WBus_count << "\t[MB: " << MBus_count << ", WB: " << WBus_count << "]" << endl;
-		// loop on the busses and calculate the AvgBusTime and AvgUtilization
-		while(!MovingFWDBusses->isEmpty()){
-			Buss* b;
-			MovingFWDBusses->dequeue(b);
-			AvgBusTime = AvgBusTime + b->getJourneyTime();
-			AvgUtilization = AvgUtilization + b->getCapacity();
-		}
-		AvgBusTime = AvgBusTime / (MBus_count + WBus_count);
-		myFile << "Avg Bus time: " << AvgBusTime << endl;
-		myFile << "Avg Utilization: " << AvgUtilization << endl;
+		myFile << "pasenger Avg wait time: " << endl;
+		myFile << "Auto-promoted passenger: " << endl;
+		myFile << "Busses: " << endl;
+		myFile << "Avg Bus time: " << endl;
+		myFile << "Avg Utilization: " << endl;
 		return true;
 	}
 	else {
@@ -255,19 +230,17 @@ void Company::Simulate()
 				}
 				
 			}*/
-		//for (int i = 0; i < 20; i++) {
-			incrementWaitTime();
-			incrementJourneyTime();
-			releaseBus();
-			boardPassnegers();
-			moveBuses();
-	//	}
+		incrementWaitTime();
+		incrementJourneyTime();
+		releaseBus();
+		boardPassnegers();
 		
-		//moveBuses();
+		
+		moveBuses();
 		if (choice == 1) {
 			pUI->printInteractive();
 		}
-		minutes = minutes ++;
+		minutes = minutes + 1;
 
 		}
 }
@@ -290,30 +263,22 @@ void Company::releaseBus()
 void Company::moveBuses()
 {
 	Buss* b;
-	LinkedQueue<Buss*>tempFWD(*MovingFWDBusses);
-	while (!MovingFWDBusses->isEmpty()) {
-		MovingFWDBusses->dequeue(b);
-		tempFWD.dequeue(b);
-		if (b->getJourneyTime() >= st) {
+	LinkedQueue<Buss*>* tempFWD(MovingFWDBusses);
+	while (!tempFWD->isEmpty()) {
+		tempFWD->dequeue(b);
+		if (b->getJourneyTime() == st) {
 			busStations[b->getNextStation()]->addFWDBuss(b);
 		}
-		else {
-			tempFWD.enqueue(b);
-		}
-	}
-	while (!tempFWD.isEmpty()) {
-		tempFWD.dequeue(b);
-		MovingFWDBusses->enqueue(b);
 	}
 }
 
 void Company::incrementJourneyTime()
 {
 	Buss* b;
-	LinkedQueue<Buss*> tempFWD(*MovingFWDBusses);
-	LinkedQueue<Buss*> tempBCK(*MovingBCKBusses);
-	while (!tempFWD.isEmpty()) {
-		tempFWD.dequeue(b);
+	LinkedQueue<Buss*>* tempFWD(MovingFWDBusses);
+	LinkedQueue<Buss*>* tempBCK(MovingBCKBusses);
+	while (!tempFWD->isEmpty()) {
+		tempFWD->dequeue(b);
 		b->incrementJourneyTime();
 	}
 }
@@ -324,6 +289,12 @@ void Company::boardPassnegers()
 	for (int i = 1; i < s+1; i++) {
 		busStations[i]->boardPassenger();
 		busStations[i]->boardWPPassenger();
+	}
+}
+void Company::unboardPassengers()
+{
+	for (int i = 1; i < s + 1; i++) {
+		busStations[i]->unboardPassenger();
 	}
 }
 
@@ -344,6 +315,60 @@ void Company::setNumberOfPassengers()
 		noSP = busStations[i]->getCSP();
 		noWP = busStations[i]->getCWP();
 		noP = noNP + noSP + noWP;
+	}
+}
+void Company::addBusToCheckup()
+{
+	int min = getMinutes();
+	int hr = getHour();
+	int time = hr * 60 + min;
+	Buss* B;
+	LinkedQueue<Buss*>LQ, LQ1;
+	
+	busStations[getNumberOfStations()].checkupBus(LQ, LQ1);
+	while (LQ.dequeue(B)) {
+		B->setMaintenanceTime(time);
+		checkMbus.enqueue(B);
+	}
+	while (LQ1.dequeue(B)) {
+		B->setMaintenanceTime(time);
+		checkWbus.enqueue(B);
+	}
+}
+void Company:: movingToWaiting() {
+	Buss* B;
+	int min = getMinutes();
+	int hr = getHour();
+	int time = (hr * 60) + min;
+	if (MovingFWDBusses->peek(B))
+	{
+		int move = B->getstartTime();
+		if (time-move >= Stations::getTBetweenEachStation()) {
+			MovingFWDBusses.dequeue(B);
+			int pos = B->getNextStation();
+			if (pos == getNumberOfStations())
+			{
+				B->incrementJourneysCompleted();
+				busStations[pos]->addBCKBuss(B);
+			}
+			else {
+				busStations[pos]->addFWDBuss(B);
+			}
+		}
+	}
+	if (MovingBCKBusses->peek(B)) {
+		int move = B->getstartTime();
+		int pos = B->getNextStation();
+		if (time - move >= Stations::getTBetweenEachStation()) {
+			MovingBCKBusses.dequeue(B);
+			if (pos == 1) {
+				B->incrementJourneysCompleted();
+				busStations[pos]->addFWDBuss(B);
+			}
+			else {
+				busStations[pos]->addBCKBuss(B);
+			}
+		}
 	}
 }
 

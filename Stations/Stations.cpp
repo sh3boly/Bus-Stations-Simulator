@@ -19,13 +19,19 @@ Stations::Stations(int t, int no)
 	stationNumber = no;
 	WaitingFWDNormalPassengers = new LinkedQueue<Passenger*>;
 	WaitingBCKNormalPassengers = new LinkedQueue<Passenger*>;
+	//getOffFWDNormalPassengers = new LinkedQueue<Passenger*>;
+	//getOffBCKNormalPassengers = new LinkedQueue<Passenger*>;
 
 	WaitingFWDSpecialPassengers = new PriorityQueue<Passenger*>;
 	WaitingBCKSpecialPassengers = new PriorityQueue<Passenger*>;
+	//getOffFWDSpecialPassengers = new PriorityQueue<Passenger*>;
+	//getOffBCKSpecialPassengers = new PriorityQueue<Passenger*>;
 
 	WaitingFWDWheelPassengers = new LinkedQueue<Passenger*>;
 	WaitingBCKWheelPassengers = new LinkedQueue<Passenger*>;
-	
+	//getOffFWDWheelPassengers = new LinkedQueue<Passenger*>;
+	//getOffBCKWheelPassengers = new LinkedQueue<Passenger*>;
+
 	FWDBusses = new LinkedQueue<Buss*>;
 	BCKBusses = new LinkedQueue<Buss*>;
 
@@ -157,7 +163,7 @@ void Stations::boardWPPassenger()
 	LinkedQueue<Buss*>tempBBCK(*BCKBusses);
 	while (!tempBFWD.isEmpty()) {
 		tempBFWD.dequeue(b);
-		if (b->getType() == "Wbus") {
+		if (b->getType() == Wbus) {
 			while (!WaitingFWDWheelPassengers->isEmpty() && b->getCapacity() != 0) {
 				WaitingFWDWheelPassengers->dequeue(p);
 				b->getOn(p);
@@ -167,7 +173,7 @@ void Stations::boardWPPassenger()
 	}
 	while (!tempBBCK.isEmpty()) {
 		tempBBCK.dequeue(b);
-		if (b->getType() == "Wbus") {
+		if (b->getType() == Wbus) {
 			while (!WaitingBCKWheelPassengers->isEmpty() && b->getCapacity() != 0) {
 				WaitingBCKWheelPassengers->dequeue(p);
 				b->getOn(p);
@@ -185,12 +191,12 @@ void Stations::boardPassenger()
 	LinkedQueue<Buss*>tempBBCK(*BCKBusses);
 	while (!tempBFWD.isEmpty()) {
 		tempBFWD.dequeue(b);
-		if (b->getType() == "Mbus") {
-			while (!WaitingFWDSpecialPassengers->isEmpty() && b->getCapacity() != 0) {
+		if (b->getType() == Mbus) {
+			while (!WaitingFWDSpecialPassengers->isEmpty() && b->getRemCapacity() != 0) {
 				WaitingFWDSpecialPassengers->dequeue(p);
 				b->getOn(p);
 			}
-			while (!WaitingFWDNormalPassengers->isEmpty() && b->getCapacity() != 0) {
+			while (!WaitingFWDNormalPassengers->isEmpty() && b->getRemCapacity() != 0) {
 				WaitingFWDNormalPassengers->dequeue(p);
 				b->getOn(p);
 			}
@@ -198,16 +204,60 @@ void Stations::boardPassenger()
 	}
 	while (!tempBBCK.isEmpty()) {
 		tempBBCK.dequeue(b);
-		if (b->getType() == "Mbus") {
-			while (!WaitingBCKSpecialPassengers->isEmpty() && b->getCapacity() != 0) {
+		if (b->getType() == Mbus) {
+			while (!WaitingBCKSpecialPassengers->isEmpty() && b->getRemCapacity() != 0) {
 				WaitingBCKSpecialPassengers->dequeue(p);
 				b->getOn(p);
 			}
-			while (!WaitingBCKNormalPassengers->isEmpty() && b->getCapacity() != 0) {
+			while (!WaitingBCKNormalPassengers->isEmpty() && b->getRemCapacity() != 0) {
 				WaitingBCKNormalPassengers->dequeue(p);
 				b->getOn(p);
 			}
 		}
+	} 
+}
+
+
+//void Stations::unboardPassenger()
+//{
+//	Passenger* p;
+//	Buss* b;
+//	LinkedQueue<Buss*>tempBFWD(*FWDBusses);
+//	LinkedQueue<Buss*>tempBBCK(*BCKBusses);
+//	while (!tempBFWD.isEmpty()) {
+//		tempBFWD.dequeue(b);
+//		if (b->getType() == Mbus) {
+//			while (b->getRemCapacity != b->getCapacity() ){
+//				b->getOff(p);
+//			}
+//			while (!WaitingFWDNormalPassengers && b->getCapacity() != 0) {
+//				WaitingFWDNormalPassengers->dequeue(p);
+//				b->getOn(p);
+//			}
+//		}
+//	}
+//	while (!tempBBCK.isEmpty()) {
+//		tempBBCK.dequeue(b);
+//		if (b->getType() == Mbus) {
+//			while (!WaitingBCKSpecialPassengers->isEmpty() && b->getCapacity() != 0) {
+//				WaitingBCKSpecialPassengers->dequeue(p);
+//				b->getOn(p);
+//			}
+//			while (!WaitingBCKNormalPassengers->isEmpty() && b->getCapacity() != 0) {
+//				WaitingBCKNormalPassengers->dequeue(p);
+//				b->getOn(p);
+//			}
+//		}
+//	}
+//}
+
+void Stations::unboardPassenger()
+{
+	Passenger* p;
+	Buss* b;
+	while (b->getRemCapacity() != b->getCapacity())
+	{
+		b->getOff(p);
 	}
 }
 
@@ -311,6 +361,45 @@ void Stations::incrementPassengerWaitTime()
 		p->incrementWaitingTime();
 	}
 }
+void Stations:: checkupBus(LinkedQueue<Buss*>& T, LinkedQueue<Buss*>& T1) {
+	Buss* B;
+	LinkedQueue<Buss*>temp, temp1;
+	while (FWDBusses.dequeue(B)) {
+		if (B->getIsMaintenance()) {
+			if (B->getType() == Mbus) {
+				T.enqueue(B);
+			}
+			if (B->getType() == Wbus) {
+				T1.enqueue(B);
+			}
+		}
+		else
+		{
+			temp.enqueue(B);
+		}
+	}
+	while (BCKBusses.dequeue(B)) {
+		if (B->getIsMaintenance()) {
+			if (B->getType() == Mbus) {
+				T.enqueue(B);
+			}
+			if (B->getType() == Wbus) {
+				T1.enqueue(B);
+			}
+		}
+		else
+		{
+			temp1.enqueue(B);
+		}
+	}
+	while (temp.dequeue(B)) {
+		FWDBusses.enqueue(B);
+	}
+	while (temp1.dequeue(B)) {
+		BCKBusses.enqueue(B);
+	}
+}
+
 /*
 Upgrade Passenger:
 1- Loops over the count of back normal passengers and forward passengers
@@ -325,7 +414,6 @@ void Stations::upgradePassenger(int maxW)
 		WaitingBCKNormalPassengers->dequeue(p);
 		if (p->getWaitTime() > maxW) {
 			WaitingBCKSpecialPassengers->enqueue(p, 2);
-			p->promotePassenger();
 		}
 		else {
 			WaitingBCKNormalPassengers->enqueue(p);
@@ -335,7 +423,6 @@ void Stations::upgradePassenger(int maxW)
 		WaitingFWDNormalPassengers->dequeue(p);
 		if (p->getWaitTime() > maxW) {
 			WaitingFWDSpecialPassengers->enqueue(p, 2);
-			p->promotePassenger();
 		}
 		else {
 			WaitingFWDNormalPassengers->enqueue(p);
@@ -367,8 +454,6 @@ Buss* Stations::removeBCKBus()
 
 void Stations::addFWDBuss(Buss* b)
 {
-	b->setCurrentStation(stationNumber);
-	b->setNextStation(stationNumber++);
 	FWDBusses->enqueue(b);
 	countBuses++;
 }
